@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>欢迎页</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">了解 Software Reliability</div>
+    <div style="padding: 10px 0 20px 10px;">
+        <h3>&nbsp;&nbsp;&nbsp;项目介绍</h3>
+        <ul>
+            <li>构建一个用于软件可靠性评估分析的软件</li>
+            <li>Springboot作为基础框架，使用mybatis作为持久层框架</li>
+            <li>实现的有经典的软件可靠性模型（JM、GO模型），以及部分数据数据驱动算法</li>
+            <li>算法的实现包括对失效数据的处理</li>
+            <li>七成数据用于参数估计，三成数据用于对估计参数做出好坏判断</li>
+        </ul>
+
+        <h3>&nbsp;&nbsp;&nbsp;实现流程</h3>
+        <ul>
+            <li>失效数据的处理，包括数据录入</li>
+            <li>模型选择，目前可供选择的模型有JM模型、GO模型、BP神经网络等</li>
+            <li>对相应的模型采用不同的估计方法，包括最大似然估计、矩估计、最小二乘法等</li>
+            <li>得到的参数还要对估计的参数做验证确定其正确性，若在误差范围还可以做数据预测</li>
+        </ul>
+
+        <h3>&nbsp;&nbsp;&nbsp;项目成员</h3>
+        <ul>
+            <li>赵泽渊</li>
+            <li>田颖  </li>
+            <li>陈立恒</li>
+            <li>吕桂州</li>
+        </ul>
+
+        <button class="btn" onclick="openPage('http://bootdo.com','bootdo.com')">访问Software Reliability官网</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/openTab.js"></script>
+</html>
