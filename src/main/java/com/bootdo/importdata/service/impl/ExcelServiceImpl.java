@@ -20,20 +20,42 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> implements ExcelService {
 
     private NumberFormat numberFormat = null;
+    @Autowired
+    private ExcelMapper excelMapper;
+
+    @Override
+    public int count(Map<String, Object> map) {
+        return excelMapper.count(map);
+    }
+
+    @Override
+    public List<ProjectItem> show(Map<String,Object> map){
+        return excelMapper.show(map);
+    }
+
+    @Override
+    public ProjectItem get(Long id){return excelMapper.get(id);}
+
+    @Override
+    public int update(ProjectItem dict){
+        return excelMapper.update(dict);
+    }
+
+    @Override
+    public int save1(ProjectItem dict){return excelMapper.save1(dict);}
 
     @Override
     public Result importProject(MultipartFile file) {
-        // 解析Excel数据
+        // 解析Excel数据+
+        System.out.println("读取数据");
         Result r = readDataFromExcel(file);
-
         List<ProjectItem> items = (List) r.getData();
-
         if (items == null || items.size() <= 0) {
             return Result.error("没有数据！！！");
         }
@@ -41,8 +63,9 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
         //查询之前是否存在项目清单项
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("is_deleted", 0);
-        List<ProjectItem> beforeItems = baseMapper.selectList(wrapper);
-
+        //System.out.println("48");
+       /* List<ProjectItem> beforeItems = baseMapper.selectList(wrapper);
+        System.out.println("50");
         //如果存在，判断两个集合中是否有相同的项目序号
         if (beforeItems != null && beforeItems.size() > 0) {
             List<String> beforeOrderNumber = beforeItems.stream().map(ProjectItem::getOrderNumber).collect(Collectors.toList());
@@ -54,11 +77,11 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
                 }
             }
         }
-
+*/
         // 如果没有序号相等，则插入数据表格中的数据，然后重新读取
         for (ProjectItem item : items) {
             // 保存数据
-            int insert = baseMapper.insertProjectItem(item.getOrderNumber(), item.getName(), item.getContent(), item.getType(), item.getUnit(), item.getPrice(), item.getCount());
+            int insert = baseMapper.insertProjectItem(item.getFailure_number(), item.getTime_to_fail());
             if (insert <= 0) {
                 return Result.error("导入失败");
             }
@@ -74,11 +97,11 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
      */
     public Result readDataFromExcel(MultipartFile file) {
         POIFSFileSystem pfs = null;
-
+        System.out.println("读取数据");
         Workbook workbook = null;
         try {
             // 解析xls和xlsx不兼容问题
-            workbook = ExcelTool.getWorkBook(pfs, workbook, file);
+            workbook = ExcelTool.getWorkBook(null, null, file);
         } catch (IOException e) {
             e.printStackTrace();
             return Result.error("模板保存异常。");
@@ -87,26 +110,29 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
             return Result.error("请使用模板上传文件");
         }
         // 判断有记录的列数
-        if (workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells() != 7) {
+        if (workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells() != 2) {
             return Result.error("请使用类型所对应的模板");
         }
 
         numberFormat = NumberFormat.getNumberInstance();
-
+        //System.out.println("读取数据");
         List<ProjectItem> list = new ArrayList<>();
         // 获取表格第一个sheet的内容
         Sheet sheetAt = workbook.getSheetAt(0);
         // 获得sheet总行数
         int lastRowNum = sheetAt.getLastRowNum();
         if (lastRowNum < 1) {
+            //System.out.println("读取数据\n");
+            //System.out.println("读取数据");
             return Result.error("数据错误");
         }
-        // 开始读取,不读取表头所以从第二行开始
-        for (int i = 1; i <= lastRowNum; i++) {
+        System.out.println(lastRowNum);
+        for (int i = 1; i <= lastRowNum; i++) {// 开始读取,不读取表头所以从第二行开始
             // 获取每一行
+            System.out.println("有执行");
             Row row = sheetAt.getRow(i);
             // 行为空不读取
-            if (row == null)
+            if (row == null)//行空
                 continue;
             Cell cell = row.getCell(0);
             //列为空不读取
@@ -118,7 +144,7 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
             // 创建一个集合根据下标来确定每个单元格对应对象的什么属性
             List<String> rowList = new ArrayList<>();
             //添加数据
-            for (int j = 0; j < 7; j++) {
+            for (int j = 0; j < 2; j++) {
                 Cell cellOne = row.getCell(j);
                 try {
                     String item = convertData(cellOne);
@@ -130,28 +156,17 @@ public class ExcelServiceImpl extends ServiceImpl<ExcelMapper, ProjectItem> impl
                 }
             }
             //规避行数数据后几行为空
-            if (rowList.size() < 7) {
-                for (int k = 0; k < 7 - rowList.size(); k++) {
+            if (rowList.size() < 2) {
+                for (int k = 0; k < 2 - rowList.size(); k++) {
                     rowList.add("");
                 }
             }
-
             // 添加数据
-            projectItem.setOrderNumber(rowList.get(0).trim());
-            projectItem.setName(rowList.get(1).trim());
-            projectItem.setContent(rowList.get(2).trim());
-            if ("直接费".equals(rowList.get(3).trim())) {
-                projectItem.setType(1);
-            } else if ("间接费".equals(rowList.get(3).trim())) {
-                projectItem.setType(2);
-            } else if ("措施费".equals(rowList.get(3).trim())) {
-                projectItem.setType(3);
-            } else {
-                projectItem.setType(null);
-            }
-            projectItem.setUnit(rowList.get(4).trim());
-            projectItem.setPrice(rowList.get(5).trim());
-            projectItem.setCount(rowList.get(6).trim());
+            //System.out.println("数据输出");
+            //System.out.println(rowList.get(0));
+            //System.out.println(rowList.get(1));
+            projectItem.setFailure_number(rowList.get(0).trim());
+            projectItem.setTime_to_fail(rowList.get(1).trim());
             list.add(projectItem);
         }
         return Result.success("解析成功", list);

@@ -5,19 +5,63 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="projectItemResultMap" type="com.bootdo.importdata.entity.ProjectItem">
         <id column="id" property="id"/>
-        <result column="order_number" property="orderNumber"/>
-        <result column="name" property="name"/>
-        <result column="content" property="content"/>
-        <result column="type" property="type"/>
-        <result column="unit" property="unit"/>
-        <result column="price" property="price"/>
-        <result column="count" property="count"/>
-        <result column="is_deleted" property="isDeleted"/>
+        <result column="failure_number" property="failurenumber"/>
+        <result column="time_to_fail" property="timetofail"/>
     </resultMap>
 
     <insert id="insertProjectItem">
-        insert into project_item (order_number,name,content,type,unit,price,count)
-        values(#{orderNumber},#{name},#{content},#{type},#{unit},#{price},#{count})
+
+        insert ignore into time_to_failure (failure_number,time_to_fail)
+        values(#{Failure_number},#{Time_to_fail})
     </insert>
 
+    <select id="show" resultType="com.bootdo.importdata.entity.ProjectItem">
+        select `id`,`failure_number`,`time_to_fail` from time_to_failure
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="failure_number != null and failure_number != ''"> and failure_number = #{failurenumber} </if>
+            <if test="time_to_fail != null and time_to_fail != ''"> and time_to_fail = #{timetofail} </if>
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from time_to_failure
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="failure_number != null and failure_number != ''"> and failure_number = #{failure_number} </if>
+            <if test="time_to_fail != null and time_to_fail != ''"> and time_to_fail = #{time_to_fail} </if>
+        </where>
+    </select>
+
+    <select id="get" resultType="com.bootdo.importdata.entity.ProjectItem">
+        select
+            `id`,`failure_number`,`time_to_fail`
+        from time_to_failure where id = #{value}
+    </select>
+
+    <update id="update" parameterType="com.bootdo.importdata.entity.ProjectItem">
+        update time_to_failure
+        <set>
+            <if test="failurenumber != null">`failure_number` = #{failurenumber},</if>
+            <if test="timetofail != null">`time_to_fail` = #{timetofail} </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <insert id="save1" parameterType="com.bootdo.importdata.entity.ProjectItem"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into time_to_failure
+        (
+            `failure_number`,
+            `time_to_fail`
+        )
+        values
+        (
+            #{failurenumber},
+            #{timetofail}
+        )
+    </insert>
 </mapper>

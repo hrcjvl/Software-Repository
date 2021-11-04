@@ -1,6 +1,16 @@
 var prefix = "/sys/online"
 $(function() {
-	load();
+//	load();
+	$("#circle").click(function () {
+		d3.select("#circle").transition()
+			.duration(750)
+			.delay(function (d, i) {
+				return i * 10;
+			})
+			.attr("r", function (d) {
+				return Math.sqrt(d * scale);
+			});
+	});
 });
 
 function load() {

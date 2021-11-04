@@ -72,9 +72,14 @@ public class ModelController extends BaseController{
         String description = "";
         int revision = 1;
         String key = "process";
-
+        /*
+        *ObjectMapper objectMapper = new ObjectMapper();
+        *ObjectNode objectNode = objectMapper.createObjectNode();
+        *创建ObjectNode实例
+        */
         ObjectNode modelNode = objectMapper.createObjectNode();
-        modelNode.put(ModelDataJsonConstants.MODEL_NAME, name);
+
+        modelNode.put(ModelDataJsonConstants.MODEL_NAME, name);//ObjectNode类提供一组方法用于设置属性值为原始数据类型
         modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, description);
         modelNode.put(ModelDataJsonConstants.MODEL_REVISION, revision);
 

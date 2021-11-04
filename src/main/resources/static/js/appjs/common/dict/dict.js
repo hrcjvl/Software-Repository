@@ -1,4 +1,3 @@
-
 var prefix = "/common/dict"
 $(function() {
 	
@@ -54,10 +53,11 @@ function load() {
 		.bootstrapTable(
 			{
 				method : 'get', // 服务器数据的请求方式 get or post
-				url : prefix + "/list", // 服务器数据的加载地址
+				url : prefix + "/list", // 服务器数据的加载地址	//表格数据来源
+				contentType:'application/x-www-form-urlencoded; charset=UTF-8',
 				//	showRefresh : true,
 				//	showToggle : true,
-				//	showColumns : true,
+				//showColumns : true,
 				iconSize : 'outline',
 				toolbar : '#exampleToolbar',
 				striped : true, // 设置为true会有隔行变色效果
@@ -94,7 +94,7 @@ function load() {
 					},
 					{
 						field : 'id',
-						title : '编号'
+						title : '编号14'//列
 					},
 					{
 						field : 'name',
@@ -119,7 +119,7 @@ function load() {
 						title : '排序（升序）'
 					},
 					{
-						visible : false,
+						//visible : false,
 						field : 'parentId',
 						title : '父级编号'
 					},

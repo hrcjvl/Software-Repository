@@ -9,9 +9,7 @@ import java.io.IOException;
 
 /**
  * 解析Excel文件单元格内容
- *
- * @Author: liyh
- * @Date: 2020/10/24 17:05
+ * @Date
  */
 public class ExcelTool {
     public static final String EMPTY = "";
@@ -24,11 +22,11 @@ public class ExcelTool {
      * @return 路径的后缀名
      */
     public static String getPostfix(String path) {
-        if (path == null || EMPTY.equals(path.trim())) {
+        if (path == null || EMPTY.equals(path.trim())) {//输入文件名地址为null,或输入文件名为空
             return EMPTY;
         }
         if (path.contains(POINT)) {
-            return path.substring(path.lastIndexOf(POINT) + 1, path.length());
+            return path.substring(path.lastIndexOf(POINT) + 1, path.length());//返回文件格式
         }
         return EMPTY;
     }
@@ -36,21 +34,21 @@ public class ExcelTool {
     /**
      * 解析xls和xlsx不兼容问题
      *
-     * @param pfs
-     * @param workbook
+     * @param Pfs
+     * @param workBook
      * @param file
      * @return
      */
-    public static Workbook getWorkBook(POIFSFileSystem pfs, Workbook workbook, MultipartFile file) throws IOException {
+    public static Workbook getWorkBook(POIFSFileSystem Pfs, Workbook workBook, MultipartFile file) throws IOException {
         String filename = file.getOriginalFilename();
         if (filename.endsWith("xls")) {
-            pfs = new POIFSFileSystem(file.getInputStream());
-            workbook = new HSSFWorkbook(pfs);
-            return workbook;
+            Pfs = new POIFSFileSystem(file.getInputStream());
+            workBook = new HSSFWorkbook(Pfs);
+            return workBook;
         } else if (filename.endsWith("xlsx")) {
             try {
-                workbook = new XSSFWorkbook(file.getInputStream());
-                return workbook;
+                workBook = new XSSFWorkbook(file.getInputStream());
+                return workBook;
             } catch (IOException e) {
                 return null;
             }

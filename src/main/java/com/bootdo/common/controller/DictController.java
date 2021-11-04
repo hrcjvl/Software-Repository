@@ -18,9 +18,6 @@ import java.util.Map;
 
 /**
  * 字典表
- * @author chglee
- * @email 1992lcg@163.com
- * @date 2017-09-29 18:28:07
  */
 
 @Controller
@@ -42,6 +39,7 @@ public class DictController extends BaseController {
 		// 查询列表数据
 		Query query = new Query(params);
 		List<DictDO> dictList = dictService.list(query);
+		//System.out.println(dictList);
 		int total = dictService.count(query);
 		PageUtils pageUtils = new PageUtils(dictList, total);
 		return pageUtils;

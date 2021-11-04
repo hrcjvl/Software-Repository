@@ -10,6 +10,7 @@ server:
 #    enabled: false
 spring:
   thymeleaf:
+    prefix: classpath:/templates/
     mode: HTML
     cache: false
   jackson:

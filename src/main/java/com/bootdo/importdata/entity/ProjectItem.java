@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 
 @Data
-@TableName("project_item")
-@Service
+@TableName("time_to_failure")
 public class ProjectItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,36 +17,35 @@ public class ProjectItem implements Serializable {
      */
     private Integer id;
     /**
-     * 项目序号
+     * 失效序号
      */
-    private String orderNumber;
+    private String failurenumber;
     /**
-     * 项目名称
+     * 失效时间间隔
      */
-    private String name;
-    /**
-     * 项目内容
-     */
-    private String content;
-    /**
-     * 费用类型（直接费等）
-     */
-    private Integer type;
-    /**
-     * 单位
-     */
-    private String unit;
-    /**
-     * 单价
-     */
-    private String price;
-    /**
-     * 数量
-     */
-    private String count;
-    /**
-     * 是否已删除[0-否、1-是]
-     */
-    private String isDeleted;
+    private String timetofail;
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setFailure_number(String failure_number) {
+        this.failurenumber = failure_number;
+    }
+
+    public void setTime_to_fail(String time_to_fail) {
+        this.timetofail = time_to_fail;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getFailure_number() {
+        return failurenumber;
+    }
+
+    public String getTime_to_fail() {
+        return timetofail;
+    }
 }
